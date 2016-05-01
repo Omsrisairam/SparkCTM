@@ -25,7 +25,6 @@ object SingleBabyNameAvg {
     val fewColumns = splitRDD.map(x => (x(1), x(4))).filter(x => (x._1.contains("SOPHIA")))
     //8689
     //50796
-    //val countByName = fewColumns.map { case (name, count) => (name, count.toInt) }.reduceByKey(_ + _).values.sum()
     val countByName = fewColumns.map { case (name, count) => (name, count.toInt) }.values.sum()
     println("SUM of sophia "+countByName)
     //total number of keys
