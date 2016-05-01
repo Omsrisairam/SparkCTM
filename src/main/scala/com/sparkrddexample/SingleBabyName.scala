@@ -5,7 +5,7 @@ package com.sparkrddexample
 //Year,First Name,County,Sex,Count
 import org.apache.spark.{SparkConf, SparkContext}
 
-object SingleBabyName {
+object SingleBabyNameAvg {
 
   def main(args: Array[String]) {
     val conf = new SparkConf()
@@ -13,7 +13,7 @@ object SingleBabyName {
     conf.set("spark.master", "local[4]")
     conf.set("spark.ui.port", "36000") // Override the default port
     // Create a SparkContext with this configuration
-    val sc = new SparkContext(conf.setAppName("SingleBabyName"))
+    val sc = new SparkContext(conf.setAppName("SingleBabyNameAvg"))
     //var file = sc.textFile(args(0))
     //if(args.length < 2){
       var file = sc.textFile("resources/babynames.csv")
@@ -26,7 +26,6 @@ object SingleBabyName {
     //8689
     //50796
     //val countByName = fewColumns.map { case (name, count) => (name, count.toInt) }.reduceByKey(_ + _).values.sum()
-    println(fewColumns.take(1))
     val countByName = fewColumns.map { case (name, count) => (name, count.toInt) }.values.sum()
     println("SUM of sophia "+countByName)
     //total number of keys
