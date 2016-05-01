@@ -1,38 +1,37 @@
-package com.sparkrddexample
-/**
- * Created by suri on 19/02/16.
- */
-//Year,First Name,County,Sex,Count
-import org.apache.spark.{SparkConf, SparkContext}
+  package com.sparkrddexample
 
-object SingleBabyNameAvg {
+  //Year,First Name,County,Sex,Count
+  import org.apache.spark.{SparkConf, SparkContext}
 
-  def main(args: Array[String]) {
-    val conf = new SparkConf()
-    conf.set("spark.app.name", "My Spark App")
-    conf.set("spark.master", "local[4]")
-    conf.set("spark.ui.port", "36000") // Override the default port
-    // Create a SparkContext with this configuration
-    val sc = new SparkContext(conf.setAppName("SingleBabyNameAvg"))
-    //var file = sc.textFile(args(0))
-    //if(args.length < 2){
-      var file = sc.textFile("resources/babynames.csv")
-    //}
+  object SingleBabyNameAvg {
 
-    val splitRDD = file.map(line => line.split(","))
-    //map(n => (n(1),n(4).toInt)).reduceByKey((v1,v2) => v1 + v2).collect
-    //filter(x=>{var sum = 0; x._2.foreach(a=> {sum=sum+a});sum > 12})
-    val fewColumns = splitRDD.map(x => (x(1), x(4))).filter(x => (x._1.contains("SOPHIA")))
-    //8689
-    //50796
-    val countByName = fewColumns.map { case (name, count) => (name, count.toInt) }.values.sum()
-    println("SUM of sophia "+countByName)
-    //total number of keys
-    val noOfKeys = fewColumns.map { case (name, count) => (name, count.toInt) }.countByKey().map { case (name, count) => count }.sum
+    def main(args: Array[String]) {
+      val conf = new SparkConf()
+      conf.set("spark.app.name", "My Spark App")
+      conf.set("spark.master", "local[4]")
+      conf.set("spark.ui.port", "36000") // Override the default port
 
-    println("total numer of values " + noOfKeys)
-    //computed average of sophia name
-    val mean = countByName / noOfKeys
-    println(mean)
+      // Create a SparkContext with this configuration
+      val sc = new SparkContext(conf.setAppName("SingleBabyNameAvg"))
+      //var file = sc.textFile(args(0))
+      //if(args.length < 2){
+        var file = sc.textFile("resources/babynames.csv")
+      //}
+
+      val splitRDD = file.map(line => line.split(","))
+
+      val fewColumns = splitRDD.map(x => (x(1), x(4))).filter(x => (x._1.contains("SOPHIA")))
+      //8689 - number of sophia records
+      //50796 - total number of records
+      val countByName = fewColumns.map { case (name, count) => (name, count.toInt) }.values.sum()
+      println("SUM of total number of records whose name is sophia "+countByName)
+
+      //total number of keys
+      val noOfKeys = fewColumns.map { case (name, count) => (name, count.toInt) }.countByKey().map { case (name, count) => count }.sum
+
+      println("total numer of keys that have Sophia " + noOfKeys)
+      //compute average of single baby name
+      val mean = countByName / noOfKeys
+      println(mean)
+    }
   }
-}
